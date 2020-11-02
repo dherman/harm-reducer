@@ -1,0 +1,28 @@
+{
+  "name": "harm-reducer",
+  "version": "0.1.0",
+  "description": "Produces a report of harmful language defined in a set of files",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
+  },
+  "author": "Dave Herman <david.herman@gmail.com>",
+  "license": "BSD-2-Clause",
+  "dependencies": {
+    "espree": "^7.3.0",
+    "esrecurse": "^4.3.0",
+    "java-parser": "^0.8.2"
+  },
+  "devDependencies": {
+    "jest": "^26.6.1",
+    "jest-environment-node": "^26.6.1"
+  },
+  "jest": {
+    "testEnvironment": "jest-environment-node",
+    "transform": {}
+  },
+  "volta": {
+    "node": "14.15.0"
+  }
+}
