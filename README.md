@@ -51,10 +51,6 @@ and then ensuring that we had full coverage of methods that visit any definition
 
 This process would be repeated for every language onboarded with the tool: write a custom visitor based on that language's grammar, and ensure the visitor catches every instance of a definition or reference to harmful identifiers.
 
-## Codebase crawling
-
-The tool's top-level logic should crawl a directory tree and find all relevant source files, and determine for each file what its language is in order to use the right parser.
-
 ## Report generation
 
 The tool should generate reports in a format that can be easily reviewed by codebase owners.

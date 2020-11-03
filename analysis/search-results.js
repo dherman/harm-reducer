@@ -1,4 +1,3 @@
-import Analysis from "./";
 import WordMap from "./word-map";
 
 export default class SearchResults /* <T> */ {
@@ -7,10 +6,6 @@ export default class SearchResults /* <T> */ {
     this.comments = [];               // Instance<T>[]
     this.definitions = new WordMap(); // WordMap<T>
     this.references = new WordMap();  // WordMap<T>
-  }
-
-  analyze() {
-    return new Analysis(this);
   }
 
   saveComment(comment) {

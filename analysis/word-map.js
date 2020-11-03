@@ -3,12 +3,12 @@ export default class WordMap /* <T> */ {
   constructor() {
     this.map = Object.create(null);   // { [string]: T[], ... }
     this.sizes = Object.create(null); // { [string]: int, ... }
-    this.size = 0;                    // int
+    this.totalSize = 0;               // int
   }
 
   // () -> int
   size() {
-    return this.size;
+    return this.totalSize;
   }
 
   // (string, T) -> void
@@ -16,7 +16,7 @@ export default class WordMap /* <T> */ {
     let a = this.map[key] || (this.sizes[key] = 0, this.map[key] = []);
     a.push(value);
     this.sizes[key]++;
-    this.size++;
+    this.totalSize++;
   }
 
   // (string) -> T[] | null

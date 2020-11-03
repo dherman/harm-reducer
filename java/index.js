@@ -1,23 +1,15 @@
 import { parse, BaseJavaCstVisitorWithDefaults } from 'java-parser';
-import SearchResults from '../analysis/search-results';
 import * as nameOf from './name-of';
 
 class Collector extends BaseJavaCstVisitorWithDefaults {
-  constructor(file, policy) {
+  constructor(file, results) {
     super();
 
-    this.file = file;
-    this.results = new SearchResults(policy);
+    this.file = file;       // path
+    this.results = results; // SearchResults
 
     // Provided by `java-parser` to ensure the visitor is correctly set up.
     this.validateVisitor();
-  }
-
-  collect(tree) {
-    // Walk the tree.
-    this.visit(tree);
-    // And we're done!
-    return this.results.analyze();
   }
 
   methodDeclaration(ctx) {
@@ -50,7 +42,8 @@ class Collector extends BaseJavaCstVisitorWithDefaults {
   //       https://github.com/jhipster/prettier-java/blob/master/packages/java-parser/api.d.ts
 }
 
-export default function analyze(src, file, policy) {
-  let collector = new Collector(file, policy);
-  return collector.collect(parse(src));
+export default function analyze(src, file, results) {
+  let collector = new Collector(file, results);
+  // Walk the tree, collecting violations.
+  collector.visit(parse(src));
 };

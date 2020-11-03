@@ -12,7 +12,8 @@
   "dependencies": {
     "espree": "^7.3.0",
     "esrecurse": "^4.3.0",
-    "java-parser": "^0.8.2"
+    "java-parser": "^0.8.2",
+    "walk": "^2.3.14"
   },
   "devDependencies": {
     "jest": "^26.6.1",

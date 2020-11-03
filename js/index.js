@@ -1,20 +1,12 @@
 import { parse } from 'espree';
 import { Visitor } from 'esrecurse';
-import SearchResults from '../analysis/search-results';
 import * as nameOf from './name-of';
 
 class Collector extends Visitor {
-  constructor(file, policy) {
+  constructor(file, results) {
     super();
-    this.file = file;
-    this.results = new SearchResults(policy);
-  }
-
-  collect(node) {
-    // Walk the tree.
-    this.visit(node);
-    // And we're done!
-    return this.results.analyze();
+    this.file = file;       // path
+    this.results = results; // SearchResults
   }
 
   MethodDefinition(node) {
@@ -57,9 +49,10 @@ function parseOptions(isModule) {
   };
 }
 
-export default function analyze(src, file, policy) {
-  let collector = new Collector(file, policy);
+export default function analyze(src, file, results) {
+  let collector = new Collector(file, results);
   // TODO: determine whether it's a module or a script
   let tree = parse(src, parseOptions(false));
-  return collector.collect(tree);
+  // Walk the tree, collecting violations.
+  collector.visit(tree);
 };

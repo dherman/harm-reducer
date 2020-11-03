@@ -1,29 +1,50 @@
-import WordMap from "./word-map";
+import * as fs from 'fs/promises';
+import SearchResults from './search-results';
+import analyzeJava from '../java';
+import analyzeJS from '../js';
+import Report from './report';
 
-export default class Analysis/* <T> */ {
+export default class Analysis {
 
-  constructor(results) {
-    this.results = results;
-    // Include all harmful comments discovered in this codebase.
-    this.comments = results.comments;
-    // Include all harmful definitions discovered in this codebase.
-    this.definitions = results.definitions;
-    // Include ONLY the harmful references that appear to be defined somewhere in this codebase.
-    this.references = results.references.filter(key => {
-      return results.definitions.has(key);
-    });
+  // type Lang = {
+  //   match: (path) -> boolean,
+  //   lang: string,
+  //   analyze: (string, path, SearchResults) -> void
+  // }
+
+  constructor(policy) {
+    this.policy = policy;               // Policy
+    this.langs = [];                    // Lang[]
+    this.results = Object.create(null); // { [string]: SearchResults, ... }
   }
 
-  localHarmScore() {
-    return this.comments.length
-      + this.definitions.size()
-      + this.references.size();
+  // Install support for a file type / programming language.
+  on(match, lang, analyze) {
+    this.langs.push({ match, lang, analyze });
+    this.results[lang] = new SearchResults(this.policy);
+    return this;
   }
 
-  totalHarmScore() {
-    return this.results.size();
+  // (path) -> Promise<void>
+  analyze(filePath) {
+    let lang = this.langs.find(lang => lang.match(filePath) && lang);
+    return !lang
+      ? Promise.resolve()
+      : fs.readFile(filePath, 'utf-8')
+          .then(src => {
+            lang.analyze(src, filePath, this.results[lang.lang]);
+          });
   }
 
-  // TODO: generate report
+  complete() {
+    return new Report(this.results);
+  }
+
+  // A basic analysis with support for Java and JS source files.
+  static basic(policy) {
+    return (new Analysis(policy))
+      .on(path => path.endsWith('.java'), 'java', analyzeJava)
+      .on(path => path.endsWith('.js'),   'js',   analyzeJS);
+  }
 
 }
